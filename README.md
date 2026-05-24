@@ -10,13 +10,15 @@ Agent-execution shape framers for Claude Code. Each skill takes a task and produ
 | Swarm | `shape:swarm` | ✓ live |
 | Critic | `shape:critic` | ✓ live |
 | Gated | `shape:gated` | ✓ live |
-| Contract | `task-to-verifiable-loop` (external) | ✓ live |
-| Loop | `/loop` (external) | ✓ live |
+| Contract | `shape:contract` | ✓ live (migrated from `task-to-verifiable-loop`) |
+| Loop | `shape:loop` | ✓ live (recommends `/loop` and `/schedule` for execution) |
 | One-shot | `shape:one-shot` | ✓ live |
-| Event | `shape:event` | ✓ live |
+| Event | `shape:event` | ✓ live (recommends `/update-config` and `/schedule` for wiring) |
 | Dialogue | `shape:dialogue` | ✓ live (routes Socratic teaching to `/teach-me`) |
 | Search | `shape:search` | ✓ live (recommends `/eval` for eval-harness fit) |
 | Blackboard | `shape:blackboard` | ✓ live |
+
+**All 11 shapes are first-class plugin skills.** Shapes work for both coding (refactor, build, deploy, test) and knowledge work (research, synthesis, writing, document analysis, multi-source claim verification). The composer will treat the family as a unified set when planning compositions.
 
 ## Design
 

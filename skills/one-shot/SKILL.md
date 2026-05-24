@@ -22,7 +22,7 @@ Frames a task that needs no decomposition as a One-shot contract — the action,
 - No multi-step dependency, no parallel slices, no quality iteration, no human gate, no trigger.
 - Success criterion is simple (single check, single artifact).
 - The orchestrator wants to mark "I considered shapes and concluded one-shot" rather than defaulting silently.
-- Examples: read and summarize a file, answer a factual question, fix a one-line typo, generate a single config snippet, format some text.
+- Examples (coding/ops): fix a one-line typo, generate a single config snippet, format some text, run a single command. Examples (knowledge work): read and summarize a file, summarize one paper, answer a factual question, define a term, draft one paragraph, extract one claim from a source.
 
 ## When NOT to Use
 
@@ -31,7 +31,7 @@ Frames a task that needs no decomposition as a One-shot contract — the action,
 - Quality-critical with iteration → `shape:critic`.
 - Irreversible action needing human approval → `shape:gated`.
 - Trigger-fired work → `shape:event`.
-- Open-ended objective with "make sure it actually works" framing → `task-to-verifiable-loop` (Contract).
+- Open-ended objective with "make sure it actually works" framing → `shape:contract`.
 - Recurring → `/loop` or `/schedule`.
 
 If any of those apply, use that shape instead and skip One-shot.
@@ -103,4 +103,4 @@ The skill is framing-only. Do not execute. The orchestrator (or user) acts.
 ## Key Files
 
 - Output: `/tmp/one-shot-<slug>.md` — the contract document.
-- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:gated` (✓ live), `shape:event` (✓ live), `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:loop`. Related external skills: `task-to-verifiable-loop` (Contract shape), `/loop` (Loop scheduling).
+- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:gated` (✓ live), `shape:event` (✓ live), `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (Loop scheduling).

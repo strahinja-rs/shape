@@ -21,7 +21,7 @@ Frames a parallel-independent multi-slice task as a Swarm contract — N slices,
 - Task partitions cleanly into N independent slices with no order or handoff dependency.
 - Total time is bounded by the slowest slice, not the sum.
 - A reducer (merge / dedupe / vote / pick-best / summarize) maps N outputs to one final output.
-- Examples: review N PRs, fetch N URLs, summarize N documents, score N candidates, run N test files, generate N variants and compare.
+- Examples (coding/ops): review N PRs, fetch N URLs, run N test files in parallel, score N candidates, generate N code variants. Examples (knowledge work): summarize N documents, extract claims from N transcripts, analyze N research papers, gather quotes on topic X from N sources, tag N inbox items by category.
 - Composing with other shapes: a Pipeline stage that is itself a Swarm, or a Critic where multiple critics vote.
 
 ## When NOT to Use
@@ -151,4 +151,4 @@ The skill is framing-only. Do not start spawning Agents. Do not call `codex exec
 ## Key Files
 
 - Output: `/tmp/swarm-<slug>.md` — the contract document.
-- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline`, `shape:critic`, `shape:gated`, `shape:event`, `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:one-shot`, `shape:loop`. Related external skills: `task-to-verifiable-loop` (Contract shape), `/loop` (Loop scheduling).
+- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline`, `shape:critic`, `shape:gated`, `shape:event`, `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:one-shot`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (Loop scheduling).

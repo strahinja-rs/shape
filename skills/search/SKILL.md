@@ -21,7 +21,7 @@ Frames explore-evaluate-prune work over a candidate space as a Search contract �
 - Multiple candidate solutions exist and "best" is judgment-bound or scorable.
 - Generation is part of the work — candidates aren't predetermined.
 - Pruning matters — keeping all candidates is wasteful or impossible.
-- Examples: architecture exploration, library evaluation, prompt-variation testing, hyperparameter tuning, design alternatives, prompt engineering, optimization problems, A/B-shaped decisions.
+- Examples (coding/ops): architecture exploration, library evaluation, prompt-variation testing, hyperparameter tuning, design alternatives, optimization problems, A/B-shaped decisions. Examples (knowledge work): research methodology comparison, framing exploration for a thesis, alternative thesis statements, conceptual angle exploration, evaluating which sources to prioritize.
 - Composing with other shapes: a Pipeline stage that is a Search; a Search where each candidate evaluation is itself a Critic; a Swarm of candidates evaluated by a reducer-as-judge (degenerate Search).
 
 ## When NOT to Use
@@ -151,4 +151,4 @@ The skill is framing-only. Do not generate candidates. Do not evaluate. The orch
 ## Key Files
 
 - Output: `/tmp/search-<slug>.md` — the contract document.
-- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:gated` (✓ live), `shape:event` (✓ live), `shape:one-shot`, `shape:dialogue`, `shape:blackboard`, `shape:loop`. Related external skills: `task-to-verifiable-loop` (Contract shape), `/loop` (Loop scheduling), `/eval` (specialized eval-harness scaffolder — recommend over Search when deterministic scoring + automated loop fits).
+- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:gated` (✓ live), `shape:event` (✓ live), `shape:one-shot`, `shape:dialogue`, `shape:blackboard`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (Loop scheduling), `/eval` (specialized eval-harness scaffolder — recommend over Search when deterministic scoring + automated loop fits).

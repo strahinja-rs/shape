@@ -22,7 +22,7 @@ Frames work where the conversation IS the deliverable as a Dialogue contract —
 - Requirements / scope / intent is ambiguous and needs collaborative surfacing.
 - Multiple valid paths exist and the user needs to feel into the right one.
 - Teaching / learning where Socratic question-driven exploration beats lecture.
-- Examples: architecture decisions, design exploration, requirements gathering, scope clarification, decision-making under ambiguity, ideation, exploring feelings about an option.
+- Examples (mixed coding + knowledge work): architecture decisions, design exploration, requirements gathering, scope clarification, decision-making under ambiguity, ideation, exploring feelings about an option, thinking out loud about a research direction, surfacing what's known about a topic, exploring a concept before committing to a framing.
 - Composing with other shapes: Dialogue → Pipeline (talk first, then frame the resolved plan); Dialogue → Search (talk to set criteria, then evaluate options); recurring Dialogue (re-engage same topic over multiple sessions).
 
 ## When NOT to Use
@@ -151,4 +151,4 @@ The skill is framing-only. Do not start the dialogue. The orchestrator (typicall
 ## Key Files
 
 - Output: `/tmp/dialogue-<slug>.md` — the contract document.
-- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:gated` (✓ live), `shape:event` (✓ live), `shape:one-shot`, `shape:search`, `shape:blackboard`, `shape:loop`. Related external skills: `task-to-verifiable-loop` (Contract shape), `/loop` (Loop scheduling), `/teach-me` (specialized Socratic-teaching dialogue with multi-session state — recommend over shape:dialogue when topic is defined and learning is the goal), `/orient` (specialized self-orientation dialogue).
+- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:gated` (✓ live), `shape:event` (✓ live), `shape:one-shot`, `shape:search`, `shape:blackboard`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (Loop scheduling), `/teach-me` (specialized Socratic-teaching dialogue with multi-session state — recommend over shape:dialogue when topic is defined and learning is the goal), `/orient` (specialized self-orientation dialogue).

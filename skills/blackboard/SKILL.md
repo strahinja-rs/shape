@@ -21,7 +21,7 @@ Frames opportunistic multi-agent work over a shared workspace as a Blackboard co
 - Multiple agents have distinct specialist capabilities (security, performance, readability, accessibility, …) and the work can be sliced across capabilities, not items.
 - Right decomposition isn't known upfront — work emerges as agents pick up what they can contribute.
 - Shared workspace is a natural artifact (planning doc, scratchpad, partial-results buffer).
-- Examples: codebase audit across specialist lenses, multi-perspective design critique, opportunistic refactoring (each specialist applies the changes it sees), open-ended exploration where agents build on each other's findings.
+- Examples (coding/ops): codebase audit across specialist lenses (security, performance, accessibility, readability), multi-perspective design critique, opportunistic refactoring where each specialist applies the changes it sees. Examples (knowledge work + research): multi-disciplinary research synthesis (history + economics + sociology agents on one topic), open-ended thesis exploration where specialist agents bring framings, multi-source claim verification, comparative analysis across N angles.
 - Composing with other shapes: each specialist may itself be a Pipeline; a Critic specialist; a Search specialist. Blackboard is often the meta-shape for genuinely complex multi-agent work.
 
 ## When NOT to Use
@@ -164,4 +164,4 @@ The skill is framing-only. Do not initialize the blackboard. Do not spawn specia
 ## Key Files
 
 - Output: `/tmp/blackboard-<slug>.md` — the contract document.
-- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:gated` (✓ live), `shape:event` (✓ live), `shape:one-shot`, `shape:search`, `shape:dialogue`, `shape:loop`. Related external skills: `task-to-verifiable-loop` (Contract shape), `/loop` (Loop scheduling). Blackboard is the most exotic shape — use sparingly, restructure to Swarm/Pipeline when possible.
+- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:gated` (✓ live), `shape:event` (✓ live), `shape:one-shot`, `shape:search`, `shape:dialogue`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (Loop scheduling). Blackboard is the most exotic shape — use sparingly, restructure to Swarm/Pipeline when possible.

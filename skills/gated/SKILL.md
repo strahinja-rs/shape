@@ -28,7 +28,7 @@ Frames a flow with one or more irreversible / blast-radius / shared-state steps 
 
 - Reversible local work (file edits, feature-branch commits, scratch work) — a gate is friction without value.
 - Trivial confirmations already covered by tool-level permission prompts (Claude Code already prompts for risky Bash). Don't double-gate.
-- Actions where the human can't meaningfully evaluate the gate — e.g., approving a 10K-line diff at 2 AM. Better to add upstream `shape:critic` (or `task-to-verifiable-loop`) so the human is approving a reviewed artifact, not raw output.
+- Actions where the human can't meaningfully evaluate the gate — e.g., approving a 10K-line diff at 2 AM. Better to add upstream `shape:critic` (or `shape:contract`) so the human is approving a reviewed artifact, not raw output.
 - One-shot work with no irreversible step — just do it.
 
 ## Process
@@ -158,4 +158,4 @@ The skill is framing-only. Do not start producing. Do not preview. Do not fire. 
 ## Key Files
 
 - Output: `/tmp/gated-<slug>.md` — the contract document.
-- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:event`, `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:one-shot`, `shape:loop`. Related external skills: `task-to-verifiable-loop` (Contract shape), `/loop` (Loop scheduling), `/sef-inbox` + `/invoice` + `/dm-invoice` + `/transfer` + `/tax` (concrete gated flows in the user's library).
+- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:event`, `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:one-shot`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (Loop scheduling), `/sef-inbox` + `/invoice` + `/dm-invoice` + `/transfer` + `/tax` (concrete gated flows in the user's library).

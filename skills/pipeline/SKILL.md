@@ -1,6 +1,6 @@
 ---
 name: pipeline
-description: Pipeline shape framer for multi-stage tasks with fixed sequential ordering. ALWAYS invoke this skill when the user asks to plan, structure, scaffold, or break down a workflow with distinct phases — refactor + test + document, gather + transform + load, build + deploy + verify, audit + fix + ship, or any task naming ≥3 ordered steps. Produces a Pipeline contract document — stages, per-stage worker (Claude / Codex / sub-Agent), inputs/outputs, termination check, on-failure behavior. Does not execute the pipeline; the orchestrator follows it. Do not structure multi-stage work ad-hoc — use this skill first to make stages and handoffs explicit. Skip for single-shot tasks, open-ended objectives with one completion criterion (use task-to-verifiable-loop), parallel-independent work (use shape:swarm), or event-triggered work (use shape:event).
+description: Pipeline shape framer for multi-stage tasks with fixed sequential ordering. ALWAYS invoke this skill when the user asks to plan, structure, scaffold, or break down a workflow with distinct phases — refactor + test + document, gather + transform + load, build + deploy + verify, audit + fix + ship, or any task naming ≥3 ordered steps. Produces a Pipeline contract document — stages, per-stage worker (Claude / Codex / sub-Agent), inputs/outputs, termination check, on-failure behavior. Does not execute the pipeline; the orchestrator follows it. Do not structure multi-stage work ad-hoc — use this skill first to make stages and handoffs explicit. Skip for single-shot tasks, open-ended objectives with one completion criterion (use shape:contract), parallel-independent work (use shape:swarm), or event-triggered work (use shape:event).
 # description-style: directive + negative constraint (Seleznov)
 # rationale: Pipeline framing competes with default Claude behavior (would otherwise structure multi-stage work ad-hoc); directive style forces the explicit framing step.
 ---
@@ -18,7 +18,7 @@ Frames a multi-stage task as a Pipeline contract — stages, workers, handoffs, 
 
 ## When to Use
 
-- Task has ≥3 distinct phases with fixed ordering (refactor + test + document; gather + transform + load; build + deploy + verify).
+- Task has ≥3 distinct phases with fixed ordering — coding (refactor + test + document; gather + transform + load; build + deploy + verify) or knowledge work (research → synthesize → write → review; outline → draft → edit → publish; read papers → extract claims → cross-reference → produce summary).
 - Stages have meaningful handoffs — output of stage A is input to stage B.
 - Different stages call for different workers (some Claude, some Codex, some sub-Agent).
 - User wants implicit step-by-step work made explicit before execution.
@@ -27,7 +27,7 @@ Frames a multi-stage task as a Pipeline contract — stages, workers, handoffs, 
 ## When NOT to Use
 
 - Single-shot tasks ("run the tests", "rename this variable") — just do them.
-- Open-ended objectives with one completion criterion ("make X work") — use `task-to-verifiable-loop` (Contract shape).
+- Open-ended objectives with one completion criterion ("make X work") — use `shape:contract`.
 - Parallel-independent work with no fixed ordering — use `shape:swarm`.
 - Triggered-by-event work ("when X happens, do Y") — use `shape:event`.
 - Conversational exploration where stages aren't known yet — talk first, frame later.
@@ -40,7 +40,7 @@ The skill outputs a **Pipeline contract** — a structured document, not execute
 
 Before framing, verify Pipeline is right:
 - Is the ordering fixed? If reorderable → recommend `shape:swarm`.
-- Is there only one end-state criterion? → recommend `task-to-verifiable-loop`.
+- Is there only one end-state criterion? → recommend `shape:contract`.
 - Are stages truly independent? → recommend `shape:swarm`.
 
 If unsure, ask the user one clarifying question. Don't force-fit.
@@ -135,4 +135,4 @@ The skill is framing-only. Do not start executing stages. Do not spawn Agents. D
 ## Key Files
 
 - Output: `/tmp/pipeline-<slug>.md` — the contract document.
-- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:swarm`, `shape:critic`, `shape:gated`, `shape:event`, `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:one-shot`, `shape:loop`. Related external skills: `task-to-verifiable-loop` (Contract shape), `/loop` (Loop scheduling).
+- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:swarm`, `shape:critic`, `shape:gated`, `shape:event`, `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:one-shot`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (Loop scheduling).

@@ -21,7 +21,7 @@ Frames a reactive flow as an Event contract — trigger, handler, rate limit, id
 - Work should fire automatically when condition X is met, without the user issuing the command.
 - Trigger is well-defined (deterministic detection — file event, cron tick, webhook POST, inbox arrival, system state change, conversation lifecycle hook).
 - Handler is bounded — terminates per fire, doesn't run forever.
-- Examples: "when a new SEF invoice arrives, list it for review"; "every Monday 09:00, summarize last week's commits"; "when CI fails on main, post to Slack"; "when this directory changes, rebuild docs"; "before any commit, run the linter."
+- Examples (coding/ops): "when CI fails on main, post to Slack"; "when this directory changes, rebuild docs"; "before any commit, run the linter"; "every Monday 09:00, summarize last week's commits". Examples (knowledge work + life ops): "when a new SEF invoice arrives, list it for review"; "when a new paper drops in my feed, surface for triage"; "when a new wiki note is added, suggest related links"; "daily 18:00, summarize today's captured items in the inbox".
 - Composing with other shapes: Event → Gated (handler produces a preview, human gates the action); Event → Pipeline (handler does multi-stage work); Event firing into a Blackboard.
 
 ## When NOT to Use
@@ -168,4 +168,4 @@ The skill is framing-only. Do not edit `settings.json`. Do not create cron jobs.
 ## Key Files
 
 - Output: `/tmp/event-<slug>.md` — the contract document.
-- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:gated` (✓ live), `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:one-shot`, `shape:loop`. Related external skills: `task-to-verifiable-loop` (Contract shape), `/loop` (in-session Loop with self-pacing), `/schedule` (remote-cron scheduling), `/update-config` (Claude Code hooks wiring), `/sef-inbox` (concrete Event-into-Gated handler pattern).
+- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:gated` (✓ live), `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:one-shot`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (in-session Loop with self-pacing), `/schedule` (remote-cron scheduling), `/update-config` (Claude Code hooks wiring), `/sef-inbox` (concrete Event-into-Gated handler pattern).

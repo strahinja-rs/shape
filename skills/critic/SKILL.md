@@ -1,6 +1,6 @@
 ---
 name: critic
-description: Critic shape framer for quality-critical work that needs adversarial review. ALWAYS invoke this skill when the user asks to peer-review, critique, adversarially-review, red-team, second-opinion, sanity-check, harden, or get a fresh take on the output of a task where quality is hard to verify deterministically — code review, writing review, security audit, architectural review, design critique, important draft, contract draft. Produces a Critic contract — producer worker, critic worker (typically Codex /adversarial-review or sub-Agent opus), critique rubric, max iterations, pass criteria, escalation when max hit. Supports asymmetric mode (worker + critic) and symmetric debate mode (peers + judge). Does not execute; the orchestrator follows. Do not just produce-and-ship work where quality matters — use this skill first to make the critique loop explicit. Skip for deterministically-verifiable work (use task-to-verifiable-loop), trivial single-shot work, or open-ended exploration (use shape:search).
+description: Critic shape framer for quality-critical work that needs adversarial review. ALWAYS invoke this skill when the user asks to peer-review, critique, adversarially-review, red-team, second-opinion, sanity-check, harden, or get a fresh take on the output of a task where quality is hard to verify deterministically — code review, writing review, security audit, architectural review, design critique, important draft, contract draft. Produces a Critic contract — producer worker, critic worker (typically Codex /adversarial-review or sub-Agent opus), critique rubric, max iterations, pass criteria, escalation when max hit. Supports asymmetric mode (worker + critic) and symmetric debate mode (peers + judge). Does not execute; the orchestrator follows. Do not just produce-and-ship work where quality matters — use this skill first to make the critique loop explicit. Skip for deterministically-verifiable work (use shape:contract), trivial single-shot work, or open-ended exploration (use shape:search).
 # description-style: directive + negative constraint (Seleznov)
 # rationale: Critic framing competes with default Claude behavior (would otherwise just produce and ship without explicit critique pass); directive style forces the load-bearing rubric + max-iteration constraints.
 ---
@@ -21,12 +21,12 @@ Frames quality-critical work as a Critic contract — producer, critic, rubric, 
 - Output quality matters more than speed.
 - Quality is hard to verify deterministically — no green-test signal.
 - Common LLM failure mode for this task is over-confidence (claims done before it actually works).
-- Examples: code review, security audit, architectural review, writing critique, contract drafts, important Slack/email drafts, design decisions, threat modeling.
+- Examples (coding/ops): code review, security audit, architectural review, threat modeling. Examples (knowledge work + content): writing critique, essay/argument review, research paper critique, thesis defense pre-mortem, pitch deck review, contract drafts, important Slack/email drafts, design decisions.
 - Composing with other shapes: a Pipeline stage that is itself a Critic, or a Swarm where the reducer is a Critic.
 
 ## When NOT to Use
 
-- Quality is deterministically checkable (tests pass / lint clean / type-check) — use `task-to-verifiable-loop` (Contract shape) with the test as verifier.
+- Quality is deterministically checkable (tests pass / lint clean / type-check) — use `shape:contract` with the test as verifier.
 - Quality doesn't really matter for this artifact (throwaway, scratch work) — just do it once.
 - No way to specify what "good" looks like — not Critic, probably `shape:search` (explore options first, then critique).
 - The critic would just be a yes-machine (rubber stamp, no real signal) — wasted overhead.
@@ -178,4 +178,4 @@ The skill is framing-only. Do not start the producer. Do not invoke `/adversaria
 ## Key Files
 
 - Output: `/tmp/critic-<slug>.md` — the contract document.
-- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:gated`, `shape:event`, `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:one-shot`, `shape:loop`. Related external skills: `task-to-verifiable-loop` (Contract shape), `/loop` (Loop scheduling), `codex:adversarial-review` (canonical asymmetric critic worker).
+- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:gated`, `shape:event`, `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:one-shot`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (Loop scheduling), `codex:adversarial-review` (canonical asymmetric critic worker).
