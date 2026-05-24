@@ -93,7 +93,7 @@ Pick based on the work. Per-PR review tolerates one PR being unreachable (partia
 
 ### 6. Output the contract
 
-Write to `/tmp/swarm-<slug>.md` in this shape:
+Write to `<contracts-root>/swarm-<slug>.md` in this shape:
 
 ```markdown
 # Swarm contract: <task-name>
@@ -146,9 +146,9 @@ The skill is framing-only. Do not start spawning Agents. Do not call `codex exec
 - When a slice worker is a Claude sub-Agent, the contract MUST specify `model: opus`. Never Sonnet, never Haiku.
 - Parallelism cap defaults to ≤8 (per anti-pattern #19); larger N batches.
 - If the task doesn't fit Swarm, recommend the right shape and stop — don't force-fit. When recommending a sibling shape, check `<available_skills>` for the sibling skill before suggesting by skill name; if not installed, describe the shape inline.
-- Contract path always `/tmp/swarm-<slug>.md`; slug is kebab-case derived from the task name.
+- Contract path: `<contracts-root>/swarm-<slug>.md`. Slug is kebab-case from the task name. `<contracts-root>` resolution (in order): user-specified path > task-implied project folder > cwd if it is a project (has `.git/` or `CLAUDE.md`) → `<project>/.claude/contracts/` > fallback `/tmp/shape-contracts/`.
 
 ## Key Files
 
-- Output: `/tmp/swarm-<slug>.md` — the contract document.
+- Output: `<contracts-root>/swarm-<slug>.md` — the contract document.
 - Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline`, `shape:critic`, `shape:gated`, `shape:event`, `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:one-shot`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (Loop scheduling).

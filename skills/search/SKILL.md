@@ -93,7 +93,7 @@ State which applies and the cap.
 
 ### 7. Output the contract
 
-Write to `/tmp/search-<slug>.md`:
+Write to `<contracts-root>/search-<slug>.md`:
 
 ```markdown
 # Search contract: <task-name>
@@ -146,9 +146,9 @@ The skill is framing-only. Do not generate candidates. Do not evaluate. The orch
 - If the problem fits `/eval`'s eval-harness shape, recommend `/eval` and stop — don't build a generic Search contract.
 - When the evaluator is a Claude sub-Agent, the contract MUST specify `model: opus`. Never Sonnet, never Haiku.
 - If the task doesn't fit Search, recommend the right shape and stop — don't force-fit. Check `<available_skills>` before suggesting by name; if not installed, describe inline.
-- Contract path always `/tmp/search-<slug>.md`.
+- Contract path: `<contracts-root>/search-<slug>.md`. Slug is kebab-case from the task name. `<contracts-root>` resolution (in order): user-specified path > task-implied project folder > cwd if it is a project (has `.git/` or `CLAUDE.md`) → `<project>/.claude/contracts/` > fallback `/tmp/shape-contracts/`.
 
 ## Key Files
 
-- Output: `/tmp/search-<slug>.md` — the contract document.
+- Output: `<contracts-root>/search-<slug>.md` — the contract document.
 - Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:gated` (✓ live), `shape:event` (✓ live), `shape:one-shot`, `shape:dialogue`, `shape:blackboard`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (Loop scheduling), `/eval` (specialized eval-harness scaffolder — recommend over Search when deterministic scoring + automated loop fits).

@@ -59,7 +59,7 @@ If all answers are no, One-shot fits.
 
 ### 3. Output the contract
 
-Write to `/tmp/one-shot-<slug>.md`:
+Write to `<contracts-root>/one-shot-<slug>.md`:
 
 ```markdown
 # One-shot contract: <task-name>
@@ -98,9 +98,9 @@ The skill is framing-only. Do not execute. The orchestrator (or user) acts.
 - If the work is so trivial that writing the contract takes longer than doing the work, skip the contract entirely — One-shot is for *deliberate* one-shots, not for everything small.
 - When the worker is a Claude sub-Agent, the contract MUST specify `model: opus`. Never Sonnet, never Haiku.
 - If any other shape fits, recommend it and stop — don't force-fit. When recommending a sibling shape, check `<available_skills>` for the sibling skill before suggesting by name; if not installed, describe the shape inline.
-- Contract path always `/tmp/one-shot-<slug>.md`.
+- Contract path: `<contracts-root>/one-shot-<slug>.md`. Slug is kebab-case from the task name. `<contracts-root>` resolution (in order): user-specified path > task-implied project folder > cwd if it is a project (has `.git/` or `CLAUDE.md`) → `<project>/.claude/contracts/` > fallback `/tmp/shape-contracts/`.
 
 ## Key Files
 
-- Output: `/tmp/one-shot-<slug>.md` — the contract document.
+- Output: `<contracts-root>/one-shot-<slug>.md` — the contract document.
 - Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:gated` (✓ live), `shape:event` (✓ live), `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (Loop scheduling).

@@ -102,7 +102,7 @@ State what gets captured + where.
 
 ### 7. Output the contract
 
-Write to `/tmp/dialogue-<slug>.md`:
+Write to `<contracts-root>/dialogue-<slug>.md`:
 
 ```markdown
 # Dialogue contract: <task-name>
@@ -146,9 +146,9 @@ The skill is framing-only. Do not start the dialogue. The orchestrator (typicall
 - For Socratic teaching with defined topic + multi-session state, recommend `/teach-me` over shape:dialogue.
 - When the dialogue resolves into another shape, the resolution must be declared in Compositions.
 - If the task doesn't fit Dialogue, recommend the right shape and stop — don't force-fit. Check `<available_skills>` before suggesting by name; if not installed, describe inline.
-- Contract path always `/tmp/dialogue-<slug>.md`.
+- Contract path: `<contracts-root>/dialogue-<slug>.md`. Slug is kebab-case from the task name. `<contracts-root>` resolution (in order): user-specified path > task-implied project folder > cwd if it is a project (has `.git/` or `CLAUDE.md`) → `<project>/.claude/contracts/` > fallback `/tmp/shape-contracts/`.
 
 ## Key Files
 
-- Output: `/tmp/dialogue-<slug>.md` — the contract document.
+- Output: `<contracts-root>/dialogue-<slug>.md` — the contract document.
 - Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:gated` (✓ live), `shape:event` (✓ live), `shape:one-shot`, `shape:search`, `shape:blackboard`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (Loop scheduling), `/teach-me` (specialized Socratic-teaching dialogue with multi-session state — recommend over shape:dialogue when topic is defined and learning is the goal), `/orient` (specialized self-orientation dialogue).

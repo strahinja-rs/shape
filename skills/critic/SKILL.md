@@ -86,7 +86,7 @@ For symmetric: list the criteria the judge weighs when comparing peer outputs.
 
 ### 5. Output the contract
 
-Write to `/tmp/critic-<slug>.md`.
+Write to `<contracts-root>/critic-<slug>.md`.
 
 **Asymmetric template:**
 
@@ -173,9 +173,9 @@ The skill is framing-only. Do not start the producer. Do not invoke `/adversaria
 - Codex `/adversarial-review` is the default critic when no specific reason to prefer another.
 - Iteration cap defaults to 3 for asymmetric; rounds default to 1 for symmetric.
 - If the task doesn't fit Critic, recommend the right shape and stop — don't force-fit. When recommending a sibling shape, check `<available_skills>` for the sibling skill before suggesting by name; if not installed, describe the shape inline.
-- Contract path always `/tmp/critic-<slug>.md`; slug is kebab-case derived from the task name.
+- Contract path: `<contracts-root>/critic-<slug>.md`. Slug is kebab-case from the task name. `<contracts-root>` resolution (in order): user-specified path > task-implied project folder > cwd if it is a project (has `.git/` or `CLAUDE.md`) → `<project>/.claude/contracts/` > fallback `/tmp/shape-contracts/`.
 
 ## Key Files
 
-- Output: `/tmp/critic-<slug>.md` — the contract document.
+- Output: `<contracts-root>/critic-<slug>.md` — the contract document.
 - Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:gated`, `shape:event`, `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:one-shot`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (Loop scheduling), `codex:adversarial-review` (canonical asymmetric critic worker).

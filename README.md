@@ -26,6 +26,7 @@ Agent-execution shape framers for Claude Code. Each skill takes a task and produ
 - **Codex as worker.** Where appropriate, shape contracts assign stages to Codex via the `codex` plugin rather than to Claude. Heavy single-task, deterministic, long-context stages are Codex's strength.
 - **Claude sub-Agents always use Opus.** When a shape contract assigns a Claude sub-Agent as the worker for a stage or slice, the contract MUST specify `model: opus`. No exceptions — Sonnet and Haiku are not used as sub-Agent workers in any shape skill in this plugin.
 - **Composition.** Shapes nest. A Pipeline whose one stage is itself a Critic, or a Loop whose tick spawns a Swarm — explicit nested-shape declarations in the contract, no hidden composition.
+- **Project-local contracts.** Contract files land at `<contracts-root>/<shape>-<slug>.md` where `<contracts-root>` resolves in this order: (1) user-specified path; (2) task-implied project folder (e.g., "refactor the auth module in `~/work/myapp`"); (3) cwd if it is a project (has `.git/` or `CLAUDE.md`) → `<cwd>/.claude/contracts/`; (4) fallback `/tmp/shape-contracts/` (only when no project context exists). Contracts in `.claude/contracts/` can be committed or git-ignored per project preference.
 
 ## Future
 

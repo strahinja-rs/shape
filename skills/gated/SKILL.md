@@ -92,7 +92,7 @@ State which model applies. Users deserve to know if "approve" means "fired immed
 
 ### 7. Output the contract
 
-Write to `/tmp/gated-<slug>.md` in this shape:
+Write to `<contracts-root>/gated-<slug>.md` in this shape:
 
 ```markdown
 # Gated contract: <task-name>
@@ -153,9 +153,9 @@ The skill is framing-only. Do not start producing. Do not preview. Do not fire. 
 - When a producer or executor worker is a Claude sub-Agent, the contract MUST specify `model: opus`. Never Sonnet, never Haiku.
 - "Once-confirmed = always-confirmed" is never assumed; re-gate per session boundary.
 - If the task doesn't fit Gated, recommend the right shape and stop — don't force-fit. When recommending a sibling shape, check `<available_skills>` for the sibling skill before suggesting by name; if not installed, describe the shape inline.
-- Contract path always `/tmp/gated-<slug>.md`; slug is kebab-case derived from the task name.
+- Contract path: `<contracts-root>/gated-<slug>.md`. Slug is kebab-case from the task name. `<contracts-root>` resolution (in order): user-specified path > task-implied project folder > cwd if it is a project (has `.git/` or `CLAUDE.md`) → `<project>/.claude/contracts/` > fallback `/tmp/shape-contracts/`.
 
 ## Key Files
 
-- Output: `/tmp/gated-<slug>.md` — the contract document.
+- Output: `<contracts-root>/gated-<slug>.md` — the contract document.
 - Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:event`, `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:one-shot`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (Loop scheduling), `/sef-inbox` + `/invoice` + `/dm-invoice` + `/transfer` + `/tax` (concrete gated flows in the user's library).

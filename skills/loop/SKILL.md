@@ -90,7 +90,7 @@ State which applies.
 
 ### 6. Output the contract
 
-Write to `/tmp/loop-<slug>.md`:
+Write to `<contracts-root>/loop-<slug>.md`:
 
 ```markdown
 # Loop contract: <task-name>
@@ -150,9 +150,9 @@ The skill is framing-only. Do not invoke `/loop`. Do not wire `/schedule`. Do no
 - When the per-fire action internally spawns a Claude sub-Agent, the contract MUST specify `model: opus`. Never Sonnet, never Haiku.
 - If the per-fire action does anything irreversible, the contract MUST declare composition with `shape:gated`.
 - If the task doesn't fit Loop, recommend the right shape and stop — don't force-fit. Check `<available_skills>` before suggesting by name; if not installed, describe inline.
-- Contract path always `/tmp/loop-<slug>.md`.
+- Contract path: `<contracts-root>/loop-<slug>.md`. Slug is kebab-case from the task name. `<contracts-root>` resolution (in order): user-specified path > task-implied project folder > cwd if it is a project (has `.git/` or `CLAUDE.md`) → `<project>/.claude/contracts/` > fallback `/tmp/shape-contracts/`.
 
 ## Key Files
 
-- Output: `/tmp/loop-<slug>.md` — the contract document.
+- Output: `<contracts-root>/loop-<slug>.md` — the contract document.
 - Sibling shape skills (under the `shape` plugin namespace): `shape:pipeline`, `shape:swarm`, `shape:critic`, `shape:gated`, `shape:event`, `shape:contract`, `shape:one-shot`, `shape:search`, `shape:dialogue`, `shape:blackboard`. Related external skills: `/loop` (in-session loop executor, self-paced or fixed-interval), `/schedule` (remote-cron scheduled agents).

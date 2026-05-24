@@ -84,7 +84,7 @@ After per-stage fields, add:
 
 ### 5. Output the contract
 
-Write to `/tmp/pipeline-<slug>.md` in this shape:
+Write to `<contracts-root>/pipeline-<slug>.md` in this shape:
 
 ```markdown
 # Pipeline contract: <task-name>
@@ -130,9 +130,9 @@ The skill is framing-only. Do not start executing stages. Do not spawn Agents. D
 - Worker assignment is intentional per-stage, never defaulted to Claude across the board.
 - When a stage worker is a Claude sub-Agent, the contract MUST specify `model: opus`. Never Sonnet, never Haiku.
 - If the user's task does not fit Pipeline, recommend the right shape and stop — do not force-fit. When recommending a sibling shape, check whether its skill is installed in `<available_skills>` before suggesting by skill name. If not installed, describe the shape inline (e.g., "this is parallel-independent work — Swarm shape; frame manually as N concurrent slices + merge step") rather than name a skill that doesn't exist.
-- Contract path always `/tmp/pipeline-<slug>.md`; slug is kebab-case derived from the task name.
+- Contract path: `<contracts-root>/pipeline-<slug>.md`. Slug is kebab-case from the task name. `<contracts-root>` resolution (in order): user-specified path > task-implied project folder > cwd if it is a project (has `.git/` or `CLAUDE.md`) → `<project>/.claude/contracts/` > fallback `/tmp/shape-contracts/`.
 
 ## Key Files
 
-- Output: `/tmp/pipeline-<slug>.md` — the contract document.
+- Output: `<contracts-root>/pipeline-<slug>.md` — the contract document.
 - Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:swarm`, `shape:critic`, `shape:gated`, `shape:event`, `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:one-shot`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (Loop scheduling).
