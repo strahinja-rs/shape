@@ -9,7 +9,7 @@ Agent-execution shape framers for Claude Code. Each skill takes a task and produ
 | Pipeline | `shape:pipeline` | ✓ live |
 | Swarm | `shape:swarm` | ✓ live |
 | Critic | `shape:critic` | ✓ live |
-| Gated | `shape:gated` | planned |
+| Gated | `shape:gated` | ✓ live |
 | Contract | `task-to-verifiable-loop` (external) | ✓ live |
 | Loop | `/loop` (external) | ✓ live |
 | One-shot | `shape:one-shot` | planned |
