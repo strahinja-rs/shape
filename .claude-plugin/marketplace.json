@@ -1,0 +1,25 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "shape",
+  "description": "Marketplace for the `shape` plugin — frames any task into one of 11 agent-execution shapes (Pipeline, Swarm, Critic, Gated, Contract, Loop, One-shot, Event, Dialogue, Search, Blackboard) for the orchestrator to execute.",
+  "owner": {
+    "name": "Strahinja Krstić",
+    "email": "krstic@strahinja.rs"
+  },
+  "metadata": {
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "shape",
+      "description": "Agent-execution shape framers. Each skill takes a task and produces an explicit shape contract — stages, workers, termination, failure handling — for the orchestrator to execute.",
+      "version": "0.1.0",
+      "category": "development",
+      "author": {
+        "name": "Strahinja Krstić"
+      },
+      "source": "./",
+      "homepage": "https://github.com/strahinja-rs/shape"
+    }
+  ]
+}

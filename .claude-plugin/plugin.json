@@ -1,0 +1,12 @@
+{
+  "name": "shape",
+  "version": "0.1.0",
+  "description": "Agent-execution shape framers. Each skill takes a task and produces an explicit shape contract — stages, workers, termination, failure handling — for the orchestrator to execute. Family: Pipeline, Swarm, Critic, Gated, Contract, Loop, One-shot, Event, Dialogue, Search, Blackboard.",
+  "author": {
+    "name": "Strahinja Krstić",
+    "email": "krstic@strahinja.rs"
+  },
+  "homepage": "https://github.com/strahinja-rs/shape",
+  "repository": "https://github.com/strahinja-rs/shape",
+  "license": "MIT"
+}
