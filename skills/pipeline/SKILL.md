@@ -164,4 +164,4 @@ The skill is framing-only. Do not start executing stages. Do not spawn Agents. D
 ## Key Files
 
 - Output: `<contracts-root>/pipeline-<slug>.md` — the contract document.
-- Sibling approach skills (all under the `approach` plugin namespace, all live): `approach:composer`, `approach:swarm`, `approach:critic`, `approach:gated`, `approach:contract`, `approach:loop`, `approach:one-shot`, `approach:event`, `approach:dialogue`, `approach:search`, `approach:blackboard`. Related external skills: `/loop` (Loop scheduling executor).
+- Sibling approach skills (all under the `approach` plugin namespace, all live): `approach:composer`, `approach:swarm`, `approach:critic`, `approach:gated`, `approach:contract`, `approach:loop`, `approach:one-shot`, `approach:event`, `approach:dialogue`, `approach:search`, `approach:blackboard`. Related external skills: `/loop` (Loop scheduling executor), `/gut-check` (canonical user-invoked between-stage alignment check — useful when stage results feel off or when the orchestrator wants honest progress assessment before continuing).
