@@ -74,6 +74,7 @@ Default by slice characteristic:
 | Slice shape | Worker |
 |---|---|
 | Long single-task, deterministic (e.g., refactor one file, analyze one log) | Codex (`codex exec`) |
+| Goal-driven iteration per slice toward a measurable outcome with automatable verifier (e.g., "get this service's p95 latency below X" across N services) | Codex (`codex /goal`) per slice — see [PRINCIPLES.md §2b](../../PRINCIPLES.md#2b-codex-worker-variants--codex-exec-vs-codex-goal) |
 | Multi-tool exploration of one input (e.g., review one PR with multiple lookups) | sub-Agent (model: opus) |
 | Pure read + simple transform (e.g., fetch and parse one URL) | Claude inline or sub-Agent (model: opus) |
 | Heterogeneous slices (different per slice) | mix workers per slice; declare each |

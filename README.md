@@ -67,12 +67,13 @@ Contracts assign workers per stage:
 | Worker | Strength |
 |---|---|
 | Claude inline | direction-setting, judgment, orchestration |
-| Codex (`codex exec`) | long-context single-task, mechanical edits, deterministic refactors |
+| Codex (`codex exec`) | one-shot long-context single-task, mechanical edits, deterministic refactors |
+| Codex (`codex /goal`) | goal-driven iterative work toward a measurable outcome with automatable verifier; natural worker for `approach:contract` |
 | Claude sub-Agent (model: opus) | isolated exploration in its own conversation |
 | Codex `/adversarial-review` | adversarial critique, second-opinion review |
 | Human | taste, business decision, credentialed approval, destructive side effects |
 
-Default lean: **Claude for direction, Codex for execution.** Assignment is per-stage, not defaulted globally.
+Default lean: **Claude for direction, Codex for execution.** Assignment is per-stage, not defaulted globally. Codex appears in two variants — `codex exec` for one-shot stages, `codex /goal` for goal-driven iterative loops; see PRINCIPLES.md §2b.
 
 ## Composition
 

@@ -143,10 +143,11 @@ Build the tree.
 |---|---|
 | Direction-setting, judgment, orchestration, design | Claude (this harness) |
 | Long single-task execution, mechanical edits, deterministic refactors | Codex (`codex exec`) |
+| Goal-driven iterative work toward a measurable outcome (latency target, test-suite green, benchmark threshold) — verifier is automatable and the iteration loop is the cost to avoid | Codex (`codex /goal`) — see [PRINCIPLES.md §2b](../../PRINCIPLES.md#2b-codex-worker-variants--codex-exec-vs-codex-goal) |
 | Adversarial / critic review | Codex `/adversarial-review` |
 | Isolated exploration in own context | sub-Agent **(model: opus)** |
 | Pure read + transform (small input, single pass) | Claude inline |
-| Pure read + transform (large input, deep analysis) | Codex |
+| Pure read + transform (large input, deep analysis) | Codex (`codex exec`) |
 | User authorization, taste decisions, business judgment | human |
 
 Worker default lean: **Claude for direction, Codex for execution.** This is a per-stage decision, not a global default — re-evaluate per stage. See [PRINCIPLES.md §2](../../PRINCIPLES.md#2-sub-agent-workers-always-use-opus) for the model-opus rule on Claude sub-Agents.

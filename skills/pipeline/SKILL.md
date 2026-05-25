@@ -84,9 +84,10 @@ Default by stage characteristic:
 | Stage shape | Worker |
 |---|---|
 | Heavy single-task, deterministic, long context | Codex (`codex exec`) |
+| Goal-driven iterative work toward a measurable outcome (verifier-checkable, iteration loop is the cost to avoid) | Codex (`codex /goal`) — see [PRINCIPLES.md §2b](../../PRINCIPLES.md#2b-codex-worker-variants--codex-exec-vs-codex-goal) |
 | Multi-tool exploration, many small reads/writes | Claude |
 | Critique / adversarial review | sub-Agent (or Codex `/adversarial-review`) |
-| Multi-file mechanical edits with clear mapping | Codex |
+| Multi-file mechanical edits with clear mapping | Codex (`codex exec`) |
 | User confirmation or input | human |
 | Quick lookups, simple Bash, single file edits | Claude |
 

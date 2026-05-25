@@ -133,6 +133,56 @@ For small tasks, compress the template but keep objective, verifiable slices, ve
 
 **Persist the contract.** If the work will span more than one session or compaction is likely, write the contract to a file (e.g. `loop-contract.md` next to the work, or at `<contracts-root>/contract-<slug>.md` per [PRINCIPLES.md §5](../../PRINCIPLES.md#5-contracts-root-resolution)) and create matching items via `TaskCreate` so the slices survive context loss. The first 5K tokens of context survive compaction; the file does not unless re-read.
 
+### 4b. Worker handoff to Codex `/goal` (when fits)
+
+`approach:contract`'s Loop Contract structure maps almost 1:1 to [OpenAI's Codex Goals pattern](https://developers.openai.com/cookbook/examples/codex/using_goals_in_codex). When the contract's verifiers are automatable and the iteration loop would otherwise burn orchestrator attention, hand the contract off to Codex as a Goal rather than driving the loop yourself.
+
+**Field mapping** (Loop Contract → Codex Goal):
+
+| Loop Contract | Codex `/goal` field |
+|---|---|
+| Objective | Outcome (desired end state) |
+| Verifiable slices + Verifier per slice | Verification surface (tests, benchmarks, structural checks) |
+| Constraints + integrity rules ("do not weaken verifiers, do not fake the ledger") | Constraints (what must not regress; what cannot be relaxed) |
+| Stop conditions | Stop conditions (budget, no-progress, blocked, risk) — Codex respects these autonomously |
+| Scope, files, allowed tools | Boundaries (resources, files Codex can touch) |
+| Assumptions + extraction-confidence | Inherited; Codex flags if assumptions break |
+
+**Serialization to `/goal` invocation:**
+
+```
+/goal <Objective>, verified by <verification surface>, while keeping <integrity rules / constraints> green
+```
+
+Concrete example: a Loop Contract with Objective *"Reduce p95 checkout latency below 120ms"* + Verifier *"checkout benchmark + correctness suite"* + Integrity rule *"do not weaken assertions"* serializes to:
+
+```
+/goal Reduce p95 checkout latency below 120ms, verified by the checkout benchmark, while keeping the correctness suite green
+```
+
+Codex then auto-iterates until the verifier passes or stop conditions fire. Orchestrator gets pinged when Codex reports done, blocked, or stopped.
+
+**When `/goal` fits (vs sticking with orchestrator-driven loop):**
+
+- ✓ Verifier is automatable (tests, benchmarks, lint, structural checks) — Codex can read its own evidence
+- ✓ Iteration loop is the actual cost (try → verify → adjust → repeat would burn many orchestrator turns)
+- ✓ Integrity rules are explicit enough that Codex's autonomous iteration is auditable
+- ✓ Scope is bounded — clear files / tools / resources Codex can touch
+- ✗ Skip if verifier requires human judgment (use orchestrator-driven loop with reviewer pass)
+- ✗ Skip if stages need human gates between iterations (gated wrapper around `codex exec` is better)
+- ✗ Skip if integrity guarantees can't be encoded as constraints Codex would respect
+
+**Lifecycle while Codex `/goal` runs:**
+
+- `/goal` — view current objective (sanity check Codex is working on what was set)
+- `/goal pause` — pause active work (e.g., to inspect intermediate state)
+- `/goal resume` — resume paused work
+- `/goal clear` — remove objective (Codex stops)
+
+**Operational consequence:** when Section 6's Execution loop would otherwise be orchestrator-driven, consider whether handing off to `codex /goal` is a better fit. The contract you just wrote is the input. The "what changed / evidence / residual risk / human decisions still needed" final report (Section 8) is what Codex produces when done.
+
+This is the cleanest delegation pattern in the whole plugin family: Loop Contract = the goal spec; `codex /goal` = the executor; orchestrator gets the final report. See [PRINCIPLES.md §2b](../../PRINCIPLES.md#2b-codex-worker-variants--codex-exec-vs-codex-goal) for the broader Codex worker variants discussion.
+
 ### 5. Verifier selection
 
 Prefer verifiers in this order (ranked by signal quality):

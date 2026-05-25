@@ -114,12 +114,13 @@ Approach contracts assign workers per stage / slice / etc. The candidate worker 
 | Worker | Strength | Use when |
 |---|---|---|
 | **Claude inline** | direction-setting, judgment, orchestration, small reads/writes | the work needs Claude's reasoning in the current conversation context |
-| **Codex (`codex exec`)** | long-context single-task, mechanical edits, deterministic refactors, deep analysis of large inputs | the stage is well-defined and benefits from deep depth-on-one-input |
+| **Codex (`codex exec`)** | long-context single-task, mechanical edits, deterministic refactors, deep analysis of large inputs | the stage is well-defined and benefits from deep depth-on-one-input. One-shot — orchestrator decides next step. |
+| **Codex (`codex /goal`)** | goal-driven iterative work toward a measurable outcome with automatable verifier (latency targets, test-suite green, benchmark thresholds, structural invariants) | the path involves multiple iterations that would otherwise burn orchestrator attention; verifier is robust enough that Codex driving its own continuation is safe. Natural worker for `approach:contract` (Loop Contract serializes to Goal). See [PRINCIPLES.md §2b](./PRINCIPLES.md#2b-codex-worker-variants--codex-exec-vs-codex-goal). |
 | **Claude sub-Agent (model: opus)** | isolated exploration that shouldn't pollute the main context | the work needs Claude's reasoning but in its own conversation |
 | **Codex `/adversarial-review`** | adversarial critique, second-opinion review | the work is judgment-bound and needs a fresh adversarial lens |
 | **Human** | taste, business decision, credentialed approval, legal/medical/financial judgment, destructive side effects | the decision requires authority Claude/Codex can't replicate |
 
-Default lean: **Claude for direction, Codex for execution**. Worker assignment is per-stage, not defaulted globally. See [PRINCIPLES.md §2](./PRINCIPLES.md#2-sub-agent-workers-always-use-opus) for the model-opus rule on sub-Agents.
+Default lean: **Claude for direction, Codex for execution**. Worker assignment is per-stage, not defaulted globally. See [PRINCIPLES.md §2](./PRINCIPLES.md#2-sub-agent-workers-always-use-opus) for the model-opus rule on sub-Agents and [§2b](./PRINCIPLES.md#2b-codex-worker-variants--codex-exec-vs-codex-goal) for the distinction between `codex exec` and `codex /goal`.
 
 ---
 

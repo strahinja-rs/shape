@@ -67,7 +67,8 @@ Pick mode:
 
 **Producer** (asymmetric) or **peers** (symmetric):
 - Claude inline (you), or
-- Codex (`codex exec`) for long deterministic production, or
+- Codex (`codex exec`) for long deterministic one-shot production, or
+- Codex (`codex /goal`) for goal-driven iterative production toward a measurable outcome (when the critic rubric itself is automatable and the producer is supposed to iterate until the rubric passes — Critic loop runs *inside* a Codex Goal — see [PRINCIPLES.md §2b](../../PRINCIPLES.md#2b-codex-worker-variants--codex-exec-vs-codex-goal)), or
 - sub-Agent **(model: opus)** for isolated exploration.
 
 **Critic** (asymmetric) or **judge** (symmetric):

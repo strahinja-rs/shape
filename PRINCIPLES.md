@@ -28,6 +28,31 @@ The reasoning: model capability dominates token cost on judgment-bound work, whi
 
 ---
 
+## 2b. Codex worker variants — `codex exec` vs `codex /goal`
+
+Codex appears in `/approach` as two distinct worker primitives. They are not interchangeable; pick by stage shape.
+
+**`codex exec`** — one-shot invocation. Codex receives a stage spec (input + expected output + termination), runs to completion or failure, returns. Orchestrator decides next step. Use when:
+- The work is bounded by a single well-defined transformation (mechanical refactor, deep analysis of one input, deterministic file edit at scale).
+- The verifier is checked *after* Codex returns, by the orchestrator.
+- Stage termination is a single concrete event (file written, transform applied, test added).
+- This is the default Codex worker pattern across `/approach`.
+
+**`codex /goal`** — persistent thread-scoped goal-driven execution. Codex receives an Outcome + Verification surface + Constraints + Boundaries, and *iterates autonomously across multiple turns until the verifier passes or stop conditions fire*. ([OpenAI Codex Goals pattern](https://developers.openai.com/cookbook/examples/codex/using_goals_in_codex).) Use when:
+- The work has a clear measurable outcome (latency target, test-suite green, benchmark threshold, structural invariant).
+- The path to the outcome involves multiple iterations that would otherwise burn orchestrator attention (try a change → run verifier → adjust → re-run → repeat).
+- The verifier is automatable and Codex can read its own evidence (typically tests / benchmarks / lint / structural checks).
+- The integrity rules (do not weaken verifiers, do not fake the ledger) are explicit so Codex's autonomous iteration is auditable.
+- **`approach:contract`'s Loop Contract serializes naturally into a Codex Goal** — Objective → Outcome, verifiable slices → Verification surface, integrity rules → Constraints, scope → Boundaries. See `approach:contract`'s "Worker handoff to Codex `/goal`" section.
+
+**Lifecycle commands** (per OpenAI's Codex Goals pattern): `/goal` (set / view), `/goal pause`, `/goal resume`, `/goal clear`.
+
+**When in doubt, prefer `codex exec`.** Goal-driven Codex is more powerful but harder to audit — only use it when the iteration loop is the actual cost the user wants to avoid and the verifier is robust enough that Codex driving its own continuation is safe.
+
+**Operational consequence:** worker tables across all `/approach` skills list `codex exec` and `codex /goal` as distinct options. Per-stage / per-slice / per-handler worker assignment picks one explicitly.
+
+---
+
 ## 3. Assumptions + extraction-confidence — surface uncertainty, don't hide it
 
 Every contract template has an `Assumptions:` field, even when the field's content is empty or just `none`. When the framer infers anything not stated explicitly by the user — about scope, constraints, success criteria, expected inputs, worker capability, downstream consumers — the inference goes in `Assumptions:`, not in the body.
