@@ -42,13 +42,39 @@ Composition planner for the `approach` family. Reshapes itself in response to th
 
 The skill outputs a **composition tree**: a root composition contract + per-approach child contracts referenced by path. Frame, write, hand back.
 
+### Phase 0: Check for /frame plugin hand-off
+
+Before running Phase 1's inline extraction, check whether the user (or an upstream call) supplied a `frame:problem-statement` artifact from the `/frame` plugin:
+
+**Trigger conditions** (any one is sufficient):
+- User invocation includes a path to a `problem-statement.md` (e.g., `/approach:composer ./frame-<slug>/problem-statement.md`)
+- User invocation references a `frame-<slug>/` folder produced by `/frame:composer`
+- Conversation context indicates the user just ran `/frame:composer` and pointed at its output
+
+**If a Problem Statement artifact is supplied:**
+
+1. **Read the artifact** via Read tool from the supplied path.
+2. **Validate** that it contains the 9 Polya targets (end state, current state, gap, deliverable shape, verification criterion, constraints, known/unknown, user role, stakes) plus `Extraction-confidence` and `Assumptions` fields. If any required field is missing, recommend the user run `/frame:problem-statement` to complete the artifact and stop.
+3. **Inherit** the `Extraction-confidence` and `Assumptions` markers — these flow through to the composition root.
+4. **Surface to user**: *"Consuming Problem Statement from /frame at `<path>` (extraction-confidence: `<level>`). Skipping Phase 1 inline extraction. Proceeding to Phase 2 approach mapping."*
+5. **Skip Phase 1 entirely**. Proceed to Phase 2.
+6. **In the composition root**, the "Problem Statement" section references the supplied artifact path rather than the inline `composition-<slug>-problem.md` — *no need to re-write the extraction*.
+
+This is the architecturally clean hand-off documented in `/frame`'s ARCHITECTURE.md. When `/frame` is in use, composer's frame work is delegated cleanly upstream.
+
+**If no Problem Statement artifact is supplied:**
+
+Proceed to Phase 1 (transitional inline frame extraction) below.
+
 ### Phase 1: Problem extraction (load-bearing — *transitional frame work*)
 
-**The most important phase.** Composition that doesn't anchor to a precise problem statement compounds errors downstream.
+**The most important phase when Phase 0 didn't fire.** If `/frame` produced a Problem Statement upstream (Phase 0 above), skip this entire phase and go to Phase 2.
 
-> **Architectural note.** Phase 1 is *frame-space* work — problem articulation, perception, what to include/exclude. The rest of composer (Phases 2-5, 7) is *approach-space* work. Phase 1 is inlined here transitionally; long-term it delegates to a future `/frame` plugin (likely `/frame:composer` or `/frame:problem-statement`). When that plugin ships, this section becomes a thin call-out. Until then, frame work happens here.
+Composition that doesn't anchor to a precise problem statement compounds errors downstream.
+
+> **Architectural note.** Phase 1 is *frame-space* work — problem articulation, perception, what to include/exclude. The rest of composer (Phases 2-5, 7) is *approach-space* work. Phase 1 is inlined here transitionally for users who don't have the `/frame` plugin installed; users with `/frame` installed should run `/frame:composer` first and then invoke `/approach:composer` with the Problem Statement path (Phase 0 above handles this).
 >
-> The practical consequence today: this phase deserves more depth than the approach-selection phases that follow. Frame work pays for itself across every downstream choice.
+> The practical consequence today: when this phase runs (no upstream /frame), it deserves more depth than the approach-selection phases that follow. Frame work pays for itself across every downstream choice.
 
 Apply `approach:dialogue` mode internally with a 9-target extraction template. Either run a real conversation (default) or, when prompt + context is already explicit, write the Problem Statement directly and mark `extraction-confidence: high`.
 
