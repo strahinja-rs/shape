@@ -1,20 +1,25 @@
 ---
 name: gated
-description: Gated shape framer for flows with irreversible, blast-radius, or shared-state steps that need human authorization. ALWAYS invoke this skill when the user asks to plan, structure, or scope work involving deploys, sends, payments, transfers, public posts, schema migrations, dropping data, force-pushing, transmitting invoices, posting legal/financial documents, or any action that cannot be cleanly undone. Produces a Gated contract — the gated action, preview shown to human, gate question, granularity (per-instance vs batch), on-approve and on-reject behavior, idempotency/cancellability after gate. Does not execute; the orchestrator follows. Do not auto-fire irreversible actions even when confident — use this skill first to make the gate explicit. Skip for fully-reversible local work, trivial confirmations already covered by tool permissions, or actions where the human can't meaningfully evaluate the gate (consider shape:critic upstream first).
+description: Gated approach framer for flows with irreversible, blast-radius, or shared-state steps that need human authorization. ALWAYS invoke this skill when the user asks to plan, structure, or scope work involving deploys, sends, payments, transfers, public posts, schema migrations, dropping data, force-pushing, transmitting invoices, posting legal/financial documents, or any action that cannot be cleanly undone. Produces a Gated contract — the gated action, preview shown to human, gate question, granularity (per-instance vs batch), on-approve and on-reject behavior, idempotency/cancellability after gate. Does not execute; the orchestrator follows. Do not auto-fire irreversible actions even when confident — use this skill first to make the gate explicit. Skip for fully-reversible local work, trivial confirmations already covered by tool permissions, or actions where the human can't meaningfully evaluate the gate (consider approach:critic upstream first).
 # description-style: directive + negative constraint (Seleznov)
 # rationale: Gated framing competes with default Claude behavior (would otherwise auto-fire when confident); directive style forces the explicit gate at irreversible steps. The Cato Networks-style single-consent attack vector is real — autonomy decisions on side-effectful work need to be slow and explicit.
 ---
 
 <!--
 ACTIVATION TESTS (for /skill:validate --bench):
-1. SHOULD activate: "Plan the production deploy: build, test, push to prod"
-2. SHOULD NOT activate: "Refactor this function and run the tests" (reversible local work, no irreversible step)
-3. BOUNDARY: "Send these 5 reminder emails to clients" (each email is irreversible — per-instance gate? batch gate? skill must surface the granularity decision)
+1. SHOULD activate (coding): "Plan the production deploy: build, test, push to prod"
+2. SHOULD activate (knowledge work / life ops): "Send these 5 client emails after I review them — none of them auto-send"
+3. SHOULD NOT activate: "Refactor this function and run the tests" (reversible local work, no irreversible step)
+4. BOUNDARY: "Send these 5 reminder emails to clients" (each email is irreversible — per-instance gate? batch gate? skill must surface the granularity decision)
 -->
 
 # gated
 
-Frames a flow with one or more irreversible / blast-radius / shared-state steps as a Gated contract — the gated action, the preview shown to the human, the gate question, granularity, approve/reject behavior, cancellability. One of an 11-shape family in the `shape` plugin; frame-only, never executes.
+Frames a flow with one or more irreversible / blast-radius / shared-state steps as a Gated contract — the gated action, the preview shown to the human, the gate question, granularity, approve/reject behavior, cancellability. One of the 11 named approaches in the `approach` plugin; frame-only, never executes.
+
+> See [PRINCIPLES.md](../../PRINCIPLES.md) for shared rules (frame-only, sub-Agent Opus, Assumptions, Direct-Use Rule, contracts-root resolution, composition explicitness, recommend-never-force-fit).
+>
+> See [ARCHITECTURE.md](../../ARCHITECTURE.md) for the `problem → frame → approach → solution` model.
 
 ## When to Use
 
@@ -22,13 +27,26 @@ Frames a flow with one or more irreversible / blast-radius / shared-state steps 
 - Blast radius extends beyond local machine — shared infra, external API with side effects, third-party consumers downstream.
 - Mistake cost is high — legal documents, financial transactions, anything bearing the user's name.
 - "Once done, can't undo" — or only via expensive recovery (storno > cancel > undo).
-- Composing with other shapes: a Pipeline stage that is itself a Gated gate, a Swarm where each slice is Gated, a Critic followed by a Gated post-Critic action.
+- Composing with other approaches: a Pipeline stage that is itself a Gated gate, a Swarm where each slice is Gated, a Critic followed by a Gated post-Critic action.
+
+**Examples — knowledge work / life ops:**
+- Transmitting a legal invoice on a national e-invoicing system
+- Sending a client proposal after review
+- Posting a public manifesto or thought-leadership piece
+- Mailing a physical document
+- Submitting a regulatory filing
+
+**Examples — code / ops:**
+- Production deploys, schema migrations, dropping tables
+- Force-pushing to main, committing to a protected branch
+- API calls with billing side effects
+- Cron-firing of recurring side-effectful jobs
 
 ## When NOT to Use
 
 - Reversible local work (file edits, feature-branch commits, scratch work) — a gate is friction without value.
 - Trivial confirmations already covered by tool-level permission prompts (Claude Code already prompts for risky Bash). Don't double-gate.
-- Actions where the human can't meaningfully evaluate the gate — e.g., approving a 10K-line diff at 2 AM. Better to add upstream `shape:critic` (or `shape:contract`) so the human is approving a reviewed artifact, not raw output.
+- Actions where the human can't meaningfully evaluate the gate — e.g., approving a 10K-line diff at 2 AM. Better to add upstream `approach:critic` (or `approach:contract`) so the human is approving a reviewed artifact, not raw output.
 - One-shot work with no irreversible step — just do it.
 
 ## Process
@@ -55,6 +73,8 @@ Each preview must:
 
 If the action has many parameters, list them all. If the action triggers a chain (one call → downstream effects), name the chain so the user knows what they're approving.
 
+**Direct-Use Rule applies:** the preview should be derived from the *real* action that will fire, not from a summary or template. See [PRINCIPLES.md §4](../../PRINCIPLES.md#4-direct-use-rule--exercise-the-real-surface-as-early-as-possible).
+
 ### 3. Define the gate question
 
 - **Binary** — yes/no. Default. Cleanest.
@@ -72,7 +92,7 @@ Per-instance vs batch:
 
 Default to per-instance for irreversible legal/financial actions. Batch is opt-in and requires the preview to show all N items, not a summary.
 
-**Never assume "once-confirmed = always-confirmed" across a batch or session** — explicit partnership-level rule (2026-05-16). Re-gate per session, per batch boundary.
+**Never assume "once-confirmed = always-confirmed" across a batch or session** — explicit partnership-level rule. Re-gate per session, per batch boundary.
 
 ### 5. Define approve/reject behavior
 
@@ -92,7 +112,7 @@ State which model applies. Users deserve to know if "approve" means "fired immed
 
 ### 7. Output the contract
 
-Write to `<contracts-root>/gated-<slug>.md` in this shape:
+Write to `<contracts-root>/gated-<slug>.md` (`<contracts-root>` resolution per [PRINCIPLES.md §5](../../PRINCIPLES.md#5-contracts-root-resolution)):
 
 ```markdown
 # Gated contract: <task-name>
@@ -123,7 +143,13 @@ N: <count>
 - Constraint: executor must run the exact action shown in the preview — no deviation
 
 ## Compositions
-- <none | pre-gate stage is shape:pipeline | pre-gate is shape:critic | …>
+- <none | pre-gate stage is approach:pipeline | pre-gate is approach:critic | …>
+
+## Assumptions
+<inferences during framing — recipient-set completeness, reversibility model — or "none">
+
+## Extraction-confidence
+<low | medium | high>
 ```
 
 Then surface the path to the orchestrator.
@@ -146,16 +172,16 @@ The skill is framing-only. Do not start producing. Do not preview. Do not fire. 
 ## Rules
 
 - The skill always outputs a single Markdown contract file; it never executes the gated action.
-- Every Gated contract must declare per gate: action, preview, gate question, granularity, on-approve, on-reject, cancellability.
+- Every Gated contract must declare per gate: action, preview, gate question, granularity, on-approve, on-reject, cancellability. Plus Assumptions and Extraction-confidence.
 - Preview must be literal — exact action, no truncation of the dangerous bits.
 - Default granularity is per-instance for irreversible legal/financial actions. Batch is opt-in.
 - Executor must run exactly the previewed action — no deviation. If deviation is needed, re-gate.
-- When a producer or executor worker is a Claude sub-Agent, the contract MUST specify `model: opus`. Never Sonnet, never Haiku.
+- When a producer or executor worker is a Claude sub-Agent, the contract MUST specify `model: opus` per PRINCIPLES.md §2.
 - "Once-confirmed = always-confirmed" is never assumed; re-gate per session boundary.
-- If the task doesn't fit Gated, recommend the right shape and stop — don't force-fit. When recommending a sibling shape, check `<available_skills>` for the sibling skill before suggesting by name; if not installed, describe the shape inline.
-- Contract path: `<contracts-root>/gated-<slug>.md`. Slug is kebab-case from the task name. `<contracts-root>` resolution (in order): user-specified path > task-implied project folder > cwd if it is a project (has `.git/` or `CLAUDE.md`) → `<project>/.claude/contracts/` > fallback `/tmp/shape-contracts/`.
+- If the task doesn't fit Gated, recommend the right approach and stop — don't force-fit. When recommending a sibling, check `<available_skills>` first; if not installed, describe inline.
+- Contract path: `<contracts-root>/gated-<slug>.md` per PRINCIPLES.md §5.
 
 ## Key Files
 
 - Output: `<contracts-root>/gated-<slug>.md` — the contract document.
-- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:event`, `shape:blackboard`, `shape:search`, `shape:dialogue`, `shape:one-shot`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (Loop scheduling), `/sef-inbox` + `/invoice` + `/dm-invoice` + `/transfer` + `/tax` (concrete gated flows in the user's library).
+- Sibling approach skills (all under the `approach` plugin namespace, all live): `approach:composer`, `approach:pipeline`, `approach:swarm`, `approach:critic`, `approach:contract`, `approach:loop`, `approach:one-shot`, `approach:event`, `approach:dialogue`, `approach:search`, `approach:blackboard`. Related external skills: `/loop` (Loop scheduling executor), `/sef-inbox` + `/invoice` + `/dm-invoice` + `/transfer` + `/tax` (concrete gated flows in the user's library).

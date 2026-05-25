@@ -1,12 +1,12 @@
 {
-  "name": "shape",
-  "version": "0.1.0",
-  "description": "Agent-execution shape framers. Each skill takes a task and produces an explicit shape contract — stages, workers, termination, failure handling — for the orchestrator to execute. Family: Pipeline, Swarm, Critic, Gated, Contract, Loop, One-shot, Event, Dialogue, Search, Blackboard.",
+  "name": "approach",
+  "version": "0.2.0",
+  "description": "Approach-space framers — the 'how' of work. Each skill takes a framed problem and produces an explicit approach contract (stages, workers, termination, failure handling) for the orchestrator to execute. Family: Pipeline, Swarm, Critic, Gated, Contract, Loop, One-shot, Event, Dialogue, Search, Blackboard. Plus Composer (the meta-skill that picks and composes the family). See ARCHITECTURE.md for the problem→frame→approach→solution model.",
   "author": {
     "name": "Strahinja Krstić",
     "email": "krstic@strahinja.rs"
   },
-  "homepage": "https://github.com/strahinja-rs/shape",
-  "repository": "https://github.com/strahinja-rs/shape",
+  "homepage": "https://github.com/strahinja-rs/approach",
+  "repository": "https://github.com/strahinja-rs/approach",
   "license": "MIT"
 }

@@ -1,6 +1,6 @@
 ---
 name: contract
-description: Contract shape framer (Loop Contract authoring) for broad, ambiguous, high-risk, iterative, or fake-progress-prone tasks — produces verifiable slices, named verifiers, stop conditions, integrity rules. ALWAYS invoke this skill when the user asks to plan, scope, structure, or de-risk a multi-step task; when work is open-ended, architecture-heavy, research-heavy, security-sensitive, hard to test, or easy to fake-pass; when phrasing like "make sure it actually works", "verify each step", "don't fake it", or "let's break this down" appears; or when the user asks for a Loop Contract. Skip for small, well-scoped one-shot tasks (use shape:one-shot) unless explicitly requested. Do not just start executing a broad task or hand back a vague checklist. Use this skill first to split verifiable slices from human-only decisions and define how each will be verified.
+description: Contract approach framer (Loop Contract authoring) for broad, ambiguous, high-risk, iterative, or fake-progress-prone tasks — produces verifiable slices, named verifiers, stop conditions, integrity rules. ALWAYS invoke this skill when the user asks to plan, scope, structure, or de-risk a multi-step task; when work is open-ended, architecture-heavy, research-heavy, security-sensitive, hard to test, or easy to fake-pass; when phrasing like "make sure it actually works", "verify each step", "don't fake it", or "let's break this down" appears; or when the user asks for a Loop Contract. Skip for small, well-scoped one-shot tasks (use approach:one-shot) unless explicitly requested. Do not just start executing a broad task or hand back a vague checklist. Use this skill first to split verifiable slices from human-only decisions and define how each will be verified.
 # description-style: directive + negative constraint (Seleznov)
 # rationale: Contract framing competes with default Claude behavior (would otherwise just start executing a broad task or write a flat plan). Directive style forces the structured-contract route — verifiable slices, named verifiers, integrity rules. Works equally for coding and knowledge-work tasks (research synthesis, document analysis, multi-source claim verification).
 ---
@@ -15,16 +15,20 @@ ACTIVATION TESTS (for /skill:validate --bench):
 
 # contract
 
-Turn a broad, ambiguous, or high-risk task into an evidence-driven Loop Contract before doing substantive work. Extract what can be made verifiable, isolate what needs human judgment, define the smallest input that unblocks the next iteration, then execute against the contract.
+Turn a broad, ambiguous, or high-risk task into an evidence-driven Loop Contract before doing substantive work. Extract what can be made verifiable, isolate what needs human judgment, define the smallest input that unblocks the next iteration, then execute against the contract. One of the 11 named approaches in the `approach` plugin.
+
+> See [PRINCIPLES.md](../../PRINCIPLES.md) for shared rules (frame-only, sub-Agent Opus, Assumptions, **Direct-Use Rule originally articulated here, now elevated to a shared principle**, contracts-root resolution, composition explicitness, recommend-never-force-fit).
+>
+> See [ARCHITECTURE.md](../../ARCHITECTURE.md) for the `problem → frame → approach → solution` model.
 
 ## When to Use
 
 - The task is broad, ambiguous, multi-step, or open-ended.
 - Risk of regression, security, privacy, or destructive side effects.
-- Easy to claim success without evidence (research, refactors, integrations, ingest pipelines, UI quality work).
+- Easy to claim success without evidence (research, refactors, integrations, ingest pipelines, UI quality work, synthesis claims).
 - Iterative work where each pass needs its own pass/fail signal.
 - The user asks for "a plan", "let's structure this", "make sure it actually works", "verify each step", "don't fake it", "we keep going in circles".
-- The user explicitly invokes the skill (`/shape:contract` or "make a Loop Contract").
+- The user explicitly invokes the skill (`/approach:contract` or "make a Loop Contract").
 - Mixed work (code + research + ops + content) where a flat checklist would mask weak verification.
 
 ## When NOT to Use
@@ -46,7 +50,9 @@ Before writing the contract, do a 30-second gate:
 
 If the user explicitly asked for a contract, skip the gate and proceed.
 
-### 2. Direct-Use Rule (load-bearing)
+### 2. Apply the Direct-Use Rule (load-bearing for Contract specifically)
+
+The Direct-Use Rule (originally named in this skill, now a [shared principle in PRINCIPLES.md §4](../../PRINCIPLES.md#4-direct-use-rule--exercise-the-real-surface-as-early-as-possible)) applies with particular force to Contract because Contract often wraps work that *could* be verified through mocks indefinitely. The rule's intent is to prevent exactly that.
 
 If the thing being built can be used through its real intended surface, make that surface part of the loop **as early as possible**. Do not wait until the end to install, connect, run, deploy, open, import, or exercise it if doing so can reveal real blockers sooner.
 
@@ -58,6 +64,7 @@ Examples of real intended surfaces:
 - An API called over HTTP against local, staging, or production endpoints.
 - A data pipeline run against representative fixtures or approved real data.
 - A plugin, automation, extension, or package loaded into the host that will consume it.
+- A research synthesis tested against the real corpus, not against a summary of the corpus.
 
 When a direct-use path exists:
 
@@ -88,6 +95,7 @@ Objective:
 Context:
 Constraints:
 Assumptions:
+Extraction-confidence: <low | medium | high>
 
 Verifiable slices:
 - Slice:
@@ -123,7 +131,7 @@ Final report:
 
 For small tasks, compress the template but keep objective, verifiable slices, verifier, stop conditions, and final evidence.
 
-**Persist the contract.** If the work will span more than one session or compaction is likely, write the contract to a file (e.g. `loop-contract.md` next to the work) and create matching items via `TaskCreate` so the slices survive context loss. The first 5K tokens of context survive compaction; the file does not unless re-read.
+**Persist the contract.** If the work will span more than one session or compaction is likely, write the contract to a file (e.g. `loop-contract.md` next to the work, or at `<contracts-root>/contract-<slug>.md` per [PRINCIPLES.md §5](../../PRINCIPLES.md#5-contracts-root-resolution)) and create matching items via `TaskCreate` so the slices survive context loss. The first 5K tokens of context survive compaction; the file does not unless re-read.
 
 ### 5. Verifier selection
 
@@ -180,6 +188,7 @@ Use reviewers to find missed risks **after evidence exists**. A reviewer is not 
   - `/gpt54` for GPT-5.4 Extended Thinking on deep reasoning tasks.
   Read `references/reviewer-patterns.md` before invoking an external reviewer or writing a review prompt.
 - **Plan agent for upfront contract drafting.** For multi-component tasks where the initial Loop Contract draft itself is non-trivial, delegate to `subagent_type: "Plan"` and then add the verifier columns afterward.
+- **`/gut-check` for human-invoked lightweight self-assessment between iterations.** Different from formal reviewer passes — this is the user reaching for the canonical 10-question plain-language self-report (understanding, telos, progress, definition-of-done, keep-vs-change). Useful when the contract has been running for a while and the user wants to surface drift, fake progress, or a missing definition-of-done before more time is wasted. Do not auto-invoke; the user reaches for it deliberately.
 
 ### 8. Final report
 
@@ -195,7 +204,7 @@ Label outcomes as **complete**, **partially verified**, **blocked**, or **needs 
 
 ## Anti-Patterns
 
-Skill-specific failure modes for `shape:contract`:
+Skill-specific failure modes for `approach:contract`:
 
 - **Contract-then-stop.** Producing a beautiful Loop Contract and stopping there when the user asked for execution. The contract is the operating plan, not the deliverable. If the user only asked to rewrite the task into a contract, produce it and stop. If they asked to execute, the contract should be visible but the loop should run.
 - **Skipping the Direct-Use Rule.** Building and "verifying" with only mocks, fixtures, or local unit tests when the real surface (deployed endpoint, installed MCP, real browser, real client) is available. The real surface is a behavioral verifier, not an optional final step.
@@ -215,9 +224,12 @@ Skill-specific failure modes for `shape:contract`:
 - **Do not collapse "full autonomy is impossible" into a stopping point.** Instead, extract the parts that can be made verifiable, isolate the parts that need human judgment, and define the smallest human input that would unblock the next loop.
 - **Always run the narrow verifier first.** Broaden only after the narrow check passes.
 - **Always return to the direct-use surface** when a human gate clears. Do not declare success against mocks if the real surface is now available.
-- **Sub-Agent workers always use Opus.** When the contract assigns a Claude sub-Agent to a slice, verifier, or reviewer, the contract MUST specify `model: opus`. Never Sonnet, never Haiku.
+- **Sub-Agent workers always use Opus.** When the contract assigns a Claude sub-Agent to a slice, verifier, or reviewer, the contract MUST specify `model: opus` per [PRINCIPLES.md §2](../../PRINCIPLES.md#2-sub-agent-workers-always-use-opus).
+- **Assumptions and Extraction-confidence are non-optional fields** per [PRINCIPLES.md §3](../../PRINCIPLES.md#3-assumptions--extraction-confidence--surface-uncertainty-dont-hide-it).
 
 ## Key Files
 
 - `references/verifier-patterns.md` — verifier patterns by task type (code, frontend, research, documents, data, ops). Read when the verifier is not obvious.
 - `references/reviewer-patterns.md` — reviewer prompt shapes for Claude self-review, subagent review, and external CLI review (Codex, GPT-5.4). Read before invoking an external reviewer.
+- Output: typically `loop-contract.md` next to the work, or `<contracts-root>/contract-<slug>.md` per PRINCIPLES.md §5 for project-aware paths.
+- Sibling approach skills (all under the `approach` plugin namespace, all live): `approach:composer`, `approach:pipeline`, `approach:swarm`, `approach:critic`, `approach:gated`, `approach:loop`, `approach:one-shot`, `approach:event`, `approach:dialogue`, `approach:search`, `approach:blackboard`.

@@ -1,35 +1,51 @@
 ---
 name: search
-description: Search shape framer for explore-evaluate-prune work over a candidate space. ALWAYS invoke this skill when the user asks to explore options, compare alternatives, evaluate variants, A/B test approaches, optimize across candidates, prompt-engineer, hyperparameter-tune, design-explore, or pick the strongest from a generated set — "try N approaches and pick the best", "evaluate library options", "explore architecture choices", "find the best prompt variant". Produces a Search contract — candidate generation strategy, evaluation criteria, pruning rule, termination, output (winner / ranking / Pareto front). Recommends /eval when the problem fits the eval-harness shape (deterministic scoring + automated loop). Does not execute. Do not pick the first option that comes to mind — use this skill first to make the candidate space and evaluation explicit. Skip for predetermined-slice work (use shape:swarm), quality iteration on one output (use shape:critic), or single-action work (use shape:one-shot).
+description: Search approach framer for explore-evaluate-prune work over a candidate space. ALWAYS invoke this skill when the user asks to explore options, compare alternatives, evaluate variants, A/B test approaches, optimize across candidates, prompt-engineer, hyperparameter-tune, design-explore, or pick the strongest from a generated set — "try N approaches and pick the best", "evaluate library options", "explore architecture choices", "find the best prompt variant". Produces a Search contract — candidate generation strategy, evaluation criteria, pruning rule, termination, output (winner / ranking / Pareto front). Recommends /eval when the problem fits the eval-harness shape (deterministic scoring + automated loop). Does not execute. Do not pick the first option that comes to mind — use this skill first to make the candidate space and evaluation explicit. Skip for predetermined-slice work (use approach:swarm), quality iteration on one output (use approach:critic), or single-action work (use approach:one-shot).
 # description-style: directive + negative constraint (Seleznov)
 # rationale: Search framing competes with default Claude behavior (would otherwise produce one option without exploring alternatives); directive style forces the explicit candidate space + evaluation criteria.
 ---
 
 <!--
 ACTIVATION TESTS (for /skill:validate --bench):
-1. SHOULD activate: "Try 3 architecture approaches for this and pick the best"
-2. SHOULD NOT activate: "Process these 5 PRs in parallel" (predetermined slices — shape:swarm)
-3. BOUNDARY: "Pick the right ORM for this project" (could be Search if the orchestrator generates and evaluates candidates, or Dialogue if it's exploratory conversation with the user)
+1. SHOULD activate (knowledge work / strategy): "Explore 3 framings for this thesis and pick the strongest"
+2. SHOULD activate (coding): "Try 3 architecture approaches for this and pick the best"
+3. SHOULD NOT activate: "Process these 5 PRs in parallel" (predetermined slices — approach:swarm)
+4. BOUNDARY: "Pick the right ORM for this project" (could be Search if the orchestrator generates and evaluates candidates, or Dialogue if it's exploratory conversation with the user)
 -->
 
 # search
 
-Frames explore-evaluate-prune work over a candidate space as a Search contract — generation, evaluation, pruning, termination, output. Distinct from Swarm (Swarm processes predetermined slices; Search generates and evaluates iteratively). Distinct from Critic (Critic improves one output; Search picks from many). One of an 11-shape family in the `shape` plugin; frame-only, never executes.
+Frames explore-evaluate-prune work over a candidate space as a Search contract — generation, evaluation, pruning, termination, output. Distinct from Swarm (Swarm processes predetermined slices; Search generates and evaluates iteratively). Distinct from Critic (Critic improves one output; Search picks from many). One of the 11 named approaches in the `approach` plugin; frame-only, never executes.
+
+> See [PRINCIPLES.md](../../PRINCIPLES.md) for shared rules (frame-only, sub-Agent Opus, Assumptions, Direct-Use Rule, contracts-root resolution, composition explicitness, recommend-never-force-fit).
+>
+> See [ARCHITECTURE.md](../../ARCHITECTURE.md) for the `problem → frame → approach → solution` model.
 
 ## When to Use
 
 - Multiple candidate solutions exist and "best" is judgment-bound or scorable.
 - Generation is part of the work — candidates aren't predetermined.
 - Pruning matters — keeping all candidates is wasteful or impossible.
-- Examples (coding/ops): architecture exploration, library evaluation, prompt-variation testing, hyperparameter tuning, design alternatives, optimization problems, A/B-shaped decisions. Examples (knowledge work): research methodology comparison, framing exploration for a thesis, alternative thesis statements, conceptual angle exploration, evaluating which sources to prioritize.
-- Composing with other shapes: a Pipeline stage that is a Search; a Search where each candidate evaluation is itself a Critic; a Swarm of candidates evaluated by a reducer-as-judge (degenerate Search).
+- Composing with other approaches: a Pipeline stage that is a Search; a Search where each candidate evaluation is itself a Critic; a Swarm of candidates evaluated by a reducer-as-judge (degenerate Search).
+
+**Examples — knowledge work + strategy:**
+- Research methodology comparison, framing exploration for a thesis
+- Alternative thesis statements, conceptual angle exploration
+- Evaluating which sources to prioritize, picking the right metaphor for a talk
+- Strategic options evaluation (3 GTM approaches against the same rubric)
+- Picking which client to drop, picking which initiative to fund
+
+**Examples — code / ops:**
+- Architecture exploration, library evaluation, prompt-variation testing
+- Hyperparameter tuning, design alternatives, optimization problems
+- A/B-shaped decisions
 
 ## When NOT to Use
 
-- Predetermined slices, all processed → `shape:swarm` (no pruning, no winner).
-- Improving one output via critique → `shape:critic` (one artifact, iterated).
-- Single action with no alternatives to consider → `shape:one-shot`.
-- Exploration via conversation with the user, no scoring → `shape:dialogue`.
+- Predetermined slices, all processed → `approach:swarm` (no pruning, no winner).
+- Improving one output via critique → `approach:critic` (one artifact, iterated).
+- Single action with no alternatives to consider → `approach:one-shot`.
+- Exploration via conversation with the user, no scoring → `approach:dialogue`.
 - Deterministic search algorithm with a scoring function and automated loop → `/eval` (specialized eval harness; recommend it from Search if it fits).
 
 ## Process
@@ -49,9 +65,9 @@ Special case: if the problem has a clean deterministic scoring function and an a
 
 How are candidates produced?
 
-- **Enumeration** — finite known set (e.g., "Prisma vs Drizzle vs TypeORM").
-- **Synthesis** — generated by Claude/Codex per a prompt (e.g., "generate 5 architecture sketches for this requirement").
-- **Mutation** — start from a seed, generate variants (common in prompt engineering, hyperparameter search).
+- **Enumeration** — finite known set (e.g., "Prisma vs Drizzle vs TypeORM"; "Pipeline vs Pipeline+Critic vs Contract for this work").
+- **Synthesis** — generated by Claude/Codex per a prompt (e.g., "generate 5 architecture sketches for this requirement"; "generate 5 framings for this strategy doc").
+- **Mutation** — start from a seed, generate variants (common in prompt engineering, hyperparameter search, headline variations).
 - **Hybrid** — start with N enumerated, expand via synthesis if more needed.
 
 State the strategy and the expected candidate count.
@@ -65,7 +81,7 @@ Each criterion:
 - **Scorable** — pass/fail, numeric, or rank.
 - **Weighted** (if multiple) — weights or priority order, otherwise the judge will average implicitly.
 
-For evaluator: Claude inline (you), sub-Agent **(model: opus)** for parallel candidate evals, Codex `/adversarial-review` for adversarial scoring, or human (final-call).
+For evaluator: Claude inline (you), sub-Agent **(model: opus)** for parallel candidate evals, Codex `/adversarial-review` for adversarial scoring, or human (final-call). See [PRINCIPLES.md §2](../../PRINCIPLES.md#2-sub-agent-workers-always-use-opus).
 
 ### 4. Define pruning rule
 
@@ -91,9 +107,13 @@ State which applies and the cap.
 - **Ranking** — all surviving candidates ordered.
 - **Pareto front** — non-dominated set with trade-off explanation.
 
-### 7. Output the contract
+### 7. Apply the Direct-Use Rule
 
-Write to `<contracts-root>/search-<slug>.md`:
+Where possible, evaluate candidates against the real downstream use, not against a proxy. A library candidate evaluated by running it on real workload data is stronger than one evaluated against synthetic benchmarks. See [PRINCIPLES.md §4](../../PRINCIPLES.md#4-direct-use-rule--exercise-the-real-surface-as-early-as-possible).
+
+### 8. Output the contract
+
+Write to `<contracts-root>/search-<slug>.md` (`<contracts-root>` resolution per [PRINCIPLES.md §5](../../PRINCIPLES.md#5-contracts-root-resolution)):
 
 ```markdown
 # Search contract: <task-name>
@@ -119,13 +139,19 @@ Write to `<contracts-root>/search-<slug>.md`:
 
 ## Output
 - Form: <winner | ranking | pareto front>
-- Path: </tmp/search-<slug>-result.md>
+- Path: <contracts-root>/search-<slug>-result.md
 
 ## Compositions
-- <none | each evaluation is shape:critic | candidate generation is shape:pipeline | …>
+- <none | each evaluation is approach:critic | candidate generation is approach:pipeline | …>
+
+## Assumptions
+<inferences during framing — criterion completeness, candidate-space coverage — or "none">
+
+## Extraction-confidence
+<low | medium | high>
 ```
 
-### 8. Stop
+### 9. Stop
 
 The skill is framing-only. Do not generate candidates. Do not evaluate. The orchestrator follows.
 
@@ -141,14 +167,14 @@ The skill is framing-only. Do not generate candidates. Do not evaluate. The orch
 ## Rules
 
 - The skill always outputs a single Markdown contract file; it never runs the search.
-- Every Search contract must declare: generation strategy, evaluation criteria, pruning rule, termination, output form.
+- Every Search contract must declare: generation strategy, evaluation criteria, pruning rule, termination, output form, Assumptions, Extraction-confidence.
 - Evaluation criteria are non-optional and must be scorable, not vibes.
 - If the problem fits `/eval`'s eval-harness shape, recommend `/eval` and stop — don't build a generic Search contract.
-- When the evaluator is a Claude sub-Agent, the contract MUST specify `model: opus`. Never Sonnet, never Haiku.
-- If the task doesn't fit Search, recommend the right shape and stop — don't force-fit. Check `<available_skills>` before suggesting by name; if not installed, describe inline.
-- Contract path: `<contracts-root>/search-<slug>.md`. Slug is kebab-case from the task name. `<contracts-root>` resolution (in order): user-specified path > task-implied project folder > cwd if it is a project (has `.git/` or `CLAUDE.md`) → `<project>/.claude/contracts/` > fallback `/tmp/shape-contracts/`.
+- When the evaluator is a Claude sub-Agent, the contract MUST specify `model: opus` per PRINCIPLES.md §2.
+- If the task doesn't fit Search, recommend the right approach and stop — don't force-fit. Check `<available_skills>` before suggesting by name; if not installed, describe inline.
+- Contract path: `<contracts-root>/search-<slug>.md` per PRINCIPLES.md §5.
 
 ## Key Files
 
 - Output: `<contracts-root>/search-<slug>.md` — the contract document.
-- Sibling shape skills (planned, all under the `shape` plugin namespace): `shape:pipeline` (✓ live), `shape:swarm` (✓ live), `shape:critic` (✓ live), `shape:gated` (✓ live), `shape:event` (✓ live), `shape:one-shot`, `shape:dialogue`, `shape:blackboard`, `shape:loop`. Related external skills: `shape:contract`, `/loop` (Loop scheduling), `/eval` (specialized eval-harness scaffolder — recommend over Search when deterministic scoring + automated loop fits).
+- Sibling approach skills (all under the `approach` plugin namespace, all live): `approach:composer`, `approach:pipeline`, `approach:swarm`, `approach:critic`, `approach:gated`, `approach:contract`, `approach:loop`, `approach:one-shot`, `approach:event`, `approach:dialogue`, `approach:blackboard`. Related external skills: `/loop` (Loop scheduling executor), `/eval` (specialized eval-harness scaffolder — recommend over Search when deterministic scoring + automated loop fits).
